@@ -107,5 +107,36 @@ public class Ball {
 		return newVector;
 		
 	}
+
+	//Get
+	public double getRadius() {
+		return radius;
+	}
+
+	public double getPosX() {
+		return posX;
+	}
+
+	public double getPosY() {
+		return posY;
+	}
+
+	public double[] getDirection() {
+		return direction;
+	}
+
+	public int getBounces() {
+		return bounces;
+	}
+
+	public int getWait() {
+		return wait;
+	}
+
+	public boolean isMoving() {
+		return moving;
+	}
+	
+	
 	
 }
