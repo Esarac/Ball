@@ -21,12 +21,84 @@ public class Game {
 	//Constructor
 	public Game(){
 		this.balls=new ArrayList<Ball>();
+		this.scores=new Score[LEVELS.length][TOP];
 	}
 	
 	
-	//Methods
-	public boolean loadGame(String path){
+	//Add
+	public void addScore(String nickname){
+		scores[level][TOP-1]=new Score(nickname, totalBounces());
+		for(int i=0; i<scores[level].length; i++){
+			for(int j=0; j<(scores[level].length-(i+1)); j++){
+				if(scores[level][j+1]!=null){
+					if( (scores[level][j+1].compareTo(scores[level][j]))<0 ){
+						Score actualScore=scores[level][j];
+						
+						scores[level][j]=scores[level][j+1];
+						scores[level][j+1]=actualScore;
+					}
+				}
+			}
+		}
+	}
+	
+	//Calculate
+	public boolean win(){
+		boolean win=true;
+		for(int i=0; (i<balls.size()) && win; i++){
+			if(balls.get(i).isMoving()){
+				win=false;
+			}
+		}
+		return win;
+	}
+	
+	public boolean record(){
+		boolean record=false;
+		for(int i=0; (i<scores[level].length) &&(!record); i++){
+			if(scores[level][i]!=null){
+				if(scores[level][i].getScore()>=totalBounces()){
+					record=true;
+				}
+			}
+			else{
+				record=true;
+			}
+		}
+		return record;
+	}
+	
+	public int totalBounces(){
+		int bounces=0;
+		if(balls.size()!=0){
+			for(int i=0; i<balls.size(); i++){
+				bounces+=balls.get(i).getBounces();
+			}
+		}
+		else{
+			bounces=-1;
+		}
+		return bounces;
+	}
+	
+	//Show
+	public String showRecords(int level){
+		String levelRecords="Level "+level+":";
+		for(int i=0; i<scores[level].length; i++){
+			levelRecords+="\n"+scores[level][i];
+		}
+		return levelRecords;
+	}
+	
+	//Reset
+	public void resetGame(){
+		this.balls=new ArrayList<Ball>();
+	}
+	
+	//Load
+	public boolean loadGame(String path){//[FILE]
 		boolean possible=true;
+		resetGame();
 		
 		try {
 			String data=read(path);
@@ -70,13 +142,15 @@ public class Game {
 				}
 			}
 		}
-		catch(IOException e){
+		catch(IOException | NumberFormatException | IndexOutOfBoundsException e){
 			possible=false;
+			resetGame();
 		}
 		
 		return possible;
 	}
 	
+	//Read
 	private String read(String path) throws IOException{//[File]
 		String text="";
 		
@@ -100,6 +174,10 @@ public class Game {
 	
 	public int getLevel(){
 		return level;
+	}
+	
+	public Score[][] getScores(){
+		return scores;
 	}
 	
 	public ArrayList<Ball> getBalls(){

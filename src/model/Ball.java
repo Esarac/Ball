@@ -40,31 +40,31 @@ public class Ball {
 	}
 	
 	public void bounce(double width, double height){
-		
-		double distanceLeft=posX-radius;
-		double distanceRight=posX+radius;
-		
-		if(distanceLeft<=0){
-			this.direction[0]=(Math.abs(this.direction[0]));
-			this.bounces++;
+		if(moving){
+			double distanceLeft=posX-radius;
+			double distanceRight=posX+radius;
+			
+			if(distanceLeft<=0){
+				this.direction[0]=(Math.abs(this.direction[0]));
+				this.bounces++;
+			}
+			else if(distanceRight>=width){
+				this.direction[0]=-1*(Math.abs(this.direction[0]));
+				this.bounces++;
+			}
+			
+			double distanceUp=posY-radius;
+			double distanceDown=posY+radius;
+			
+			if(distanceUp<=0){
+				this.direction[1]=(Math.abs(this.direction[1]));
+				this.bounces++;
+			}
+			else if(distanceDown>=height){
+				this.direction[1]=-1*(Math.abs(this.direction[1]));
+				this.bounces++;
+			}
 		}
-		else if(distanceRight>=width){
-			this.direction[0]=-1*(Math.abs(this.direction[0]));
-			this.bounces++;
-		}
-		
-		double distanceUp=posY-radius;
-		double distanceDown=posY+radius;
-		
-		if(distanceUp<=0){
-			this.direction[1]=(Math.abs(this.direction[1]));
-			this.bounces++;
-		}
-		else if(distanceDown>=height){
-			this.direction[1]=-1*(Math.abs(this.direction[1]));
-			this.bounces++;
-		}
-		
 	}
 	
 	public void stop(double x, double y){

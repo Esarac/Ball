@@ -3,26 +3,25 @@ package thread;
 import controller.ControlGame;
 import model.Ball;
 
-public class VisualBall extends Thread{
+public class ThreadBall extends Thread{
 
 	//Attributes
-	private int index;
 	private Ball ball;
 	private ControlGame game;
 	
-	public VisualBall(ControlGame game, Ball ball, int index){
-		this.index=index;
+	public ThreadBall(ControlGame game, Ball ball){
 		this.game=game;
 		this.ball=ball;
 	}
 	
 	public void run(){
 		while(ball.isMoving()){
-			double size[]=game.screenDimnesions();
+			System.out.println("Existo!");
+			double[] stage=game.screenDimnesions();
+			
 			ball.move();
-			System.out.println(ball.getPosX()+" - "+ball.getPosY());
-			ball.bounce(size[0], size[1]);
-			game.moveBall(index, ball.getPosX(), ball.getPosY());
+			ball.bounce(stage[0], stage[1]);
+			
 			try {sleep(ball.getWait());}
 			catch (InterruptedException e) {e.printStackTrace();}
 		}
