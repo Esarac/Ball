@@ -8,12 +8,14 @@ public class ThreadVisual extends Thread{
 	
 	public ThreadVisual(ControlGame game){
 		this.game=game;
+		setDaemon(true);
 	}
 	
 	public void run(){
-		while(!game.getWin()){
+		while(!game.getFinshed()){
+			//System.out.println("ThreadVisual");
 			game.moveBalls();
-			try {sleep(10);}
+			try {sleep(2);}
 			catch (InterruptedException e) {e.printStackTrace();}
 		}
 		game.win();

@@ -1,8 +1,8 @@
 package model;
 
-public class FileDontExistException extends Exception{
-	
-	public FileDontExistException(){
+public class FileDoesNotExistException extends Exception{
+
+	public FileDoesNotExistException(){
 		super("The file do not exist. It is impossible to create this Game.");
 	}
 	

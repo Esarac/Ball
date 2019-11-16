@@ -4,6 +4,31 @@ public class Ball {
 
 	//Constants
 	public final static int DIMENSIONS=2;
+	public enum Direction{
+		
+		UP(0,-1),
+		DOWN(0,1),
+		LEFT(-1,0),
+		RIGHT(1,0),
+		UP_LEFT(-1,-1),
+		UP_RIGHT(1,-1),
+		DOWN_LEFT(-1,1),
+		DOWN_RIGHT(1,1),
+		;
+		
+		private double[] direction;
+		
+		private Direction(double x, double y){
+			this.direction= new double[2];
+			direction[0]=x;
+			direction[1]=y;
+		}
+		
+		public double[] getDirection(){
+			return direction;
+		}
+		
+	}
 	
 	//Attributes
 	private double radius;
@@ -137,6 +162,12 @@ public class Ball {
 		return moving;
 	}
 	
+	public void setMoving(boolean moving) {
+		this.moving=moving;
+	}
 	
+	public String toString(){
+		return "Ball[P:("+posX+","+posY+")V:("+direction[0]+","+direction[1]+")]";
+	}
 	
 }

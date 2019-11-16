@@ -1,7 +1,12 @@
 package model;
 
-public class Score implements Comparable<Score>{
+import java.io.Serializable;
 
+public class Score implements Comparable<Score>, Serializable{
+
+	//Constants
+	private static final long serialVersionUID = 1L;
+	
 	//Attributes
 	private String nickname;
 	private int score;

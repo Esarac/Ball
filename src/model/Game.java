@@ -2,14 +2,24 @@ package model;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import model.Ball.Direction;
 
 public class Game {
 
 	//Constant
+	public final static String FILE_TYPE="*.sav";
+	public final static String SCORES_PATH="dat/scores.mtx";
+	
 	public final static int[] LEVELS={0, 1, 2};
 	public final static int TOP=10;
 	
@@ -22,8 +32,8 @@ public class Game {
 	public Game(){
 		this.balls=new ArrayList<Ball>();
 		this.scores=new Score[LEVELS.length][TOP];
+		loadScores();
 	}
-	
 	
 	//Add
 	public void addScore(String nickname){
@@ -43,7 +53,7 @@ public class Game {
 	}
 	
 	//Calculate
-	public boolean win(){
+	public boolean finshed(){
 		boolean win=true;
 		for(int i=0; (i<balls.size()) && win; i++){
 			if(balls.get(i).isMoving()){
@@ -85,13 +95,22 @@ public class Game {
 	public String showRecords(int level){
 		String levelRecords="Level "+level+":";
 		for(int i=0; i<scores[level].length; i++){
-			levelRecords+="\n"+scores[level][i];
+			if(scores[level][i]!=null){
+				levelRecords+="\n"+scores[level][i];
+			}
+			else{
+				levelRecords+="\n"+"------";
+			}
+			
 		}
 		return levelRecords;
 	}
 	
 	//Reset
 	public void resetGame(){
+		for(int i=0; i<balls.size(); i++){
+			balls.get(i).setMoving(false);
+		}
 		this.balls=new ArrayList<Ball>();
 	}
 	
@@ -108,8 +127,11 @@ public class Game {
 				for(String individualData: globalData){
 					if(individualData.charAt(0)!='#'){//Ignore->#
 						if(index==0){//Level
-							if(Arrays.asList(LEVELS).contains(Integer.parseInt(individualData)))
-								this.level=Integer.parseInt(individualData);
+							for(int level: LEVELS){
+								if(Integer.parseInt(individualData)==level){
+									this.level=Integer.parseInt(individualData);
+								}
+							}
 						}
 						else{//Balls
 							String[] ballData=individualData.split("	");
@@ -118,10 +140,18 @@ public class Game {
 							double posY=Double.parseDouble(ballData[2]);
 							int wait=Integer.parseInt(ballData[3]);
 							//Direction
-							String[] dir=ballData[4].split(",");
-							double dirX=Double.parseDouble(dir[0]);
-							double dirY=Double.parseDouble(dir[1]);
-							double[] direction= {dirX, dirY};
+							double[] direction=null;
+							try{
+								String[] dir=ballData[4].split(",");
+								double dirX=Double.parseDouble(dir[0]);
+								double dirY=Double.parseDouble(dir[1]);
+								double[] directionVector= {dirX, dirY};
+								direction=directionVector;
+							}
+							catch(NumberFormatException e){
+								Direction directionName=Direction.valueOf(ballData[4]);
+								direction=directionName.getDirection();
+							}
 							//...
 							int bounces=Integer.parseInt(ballData[5]);
 							boolean moving=Boolean.parseBoolean(ballData[6]);
@@ -135,18 +165,65 @@ public class Game {
 			}
 			else{
 				try{
-					throw new FileDontExistException();
+					throw new FileDoesNotExistException();
 				}
-				catch(FileDontExistException e){
+				catch(FileDoesNotExistException e){
 					possible=false;
 				}
 			}
 		}
-		catch(IOException | NumberFormatException | IndexOutOfBoundsException e){
+		catch(IOException | IllegalArgumentException | IndexOutOfBoundsException e){
 			possible=false;
 			resetGame();
 		}
 		
+		return possible;
+	}
+	
+	public boolean loadScores(){
+		boolean possible=true;
+		try{
+			FileInputStream file=new FileInputStream(SCORES_PATH);
+			ObjectInputStream creator=new ObjectInputStream(file);
+			this.scores=(Score[][])creator.readObject();
+			creator.close();
+		}
+		catch (IOException e) {saveScores();} 
+		catch (ClassNotFoundException e) {possible=false;}
+		return possible;
+	}
+	
+	//Save
+	public boolean saveGame(String path){
+		boolean possible=true;
+		try{
+			String text="#Level";
+			text+="\n"+level;
+			for(int i=0; i<balls.size(); i++){
+				text+="\n#radius	posX	posY	wait	dir	bounces	moving";
+				text+="\n"+balls.get(i).getRadius()+"	"+balls.get(i).getPosX()+"	"+balls.get(i).getPosY()+"	"+balls.get(i).getWait()+"	"+balls.get(i).getDirection()[0]+","+balls.get(i).getDirection()[1]+"	"+balls.get(i).getBounces()+"	"+balls.get(i).isMoving();
+			}
+			
+			File file=new File(path);
+			PrintWriter writer=new PrintWriter(file);
+			writer.append(text);
+			writer.close();
+		}
+		catch (IOException e) {possible=false;}
+		return possible;
+	}
+	
+	public boolean saveScores(){
+		boolean possible=true;
+		try {
+			File dir=new File("dat//");
+			dir.mkdir();
+			FileOutputStream file=new FileOutputStream(SCORES_PATH);
+			ObjectOutputStream creator=new ObjectOutputStream(file);
+			creator.writeObject(scores);
+			creator.close();
+		}
+		catch (IOException e) {possible=false;}
 		return possible;
 	}
 	

@@ -12,11 +12,12 @@ public class ThreadBall extends Thread{
 	public ThreadBall(ControlGame game, Ball ball){
 		this.game=game;
 		this.ball=ball;
+		setDaemon(true);
 	}
 	
 	public void run(){
 		while(ball.isMoving()){
-			System.out.println("Existo!");
+			//System.out.println("ThreadBall "+ball);
 			double[] stage=game.screenDimnesions();
 			
 			ball.move();

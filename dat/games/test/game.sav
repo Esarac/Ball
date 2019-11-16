@@ -1,0 +1,6 @@
+#Level
+0
+#radius	posX	posY	wait	dir	bounces	moving
+50.0	0	0	10	DOWN	24	true
+50.0	0	0	10	-3,4	24	true
+50.0	0	0	10	UP_RIGHT	24	true

@@ -18,7 +18,7 @@
             <Menu mnemonicParsing="false" text="File" fx:id="file">
               <items>
                 <MenuItem mnemonicParsing="false" onAction="#loadGame" text="Load Game" />
-                <MenuItem mnemonicParsing="false" text="Save Game" />
+                <MenuItem mnemonicParsing="false" onAction="#saveGame" text="Save Game" />
               </items>
             </Menu>
             <Menu mnemonicParsing="false" text="View" fx:id="view">

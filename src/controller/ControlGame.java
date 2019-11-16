@@ -11,31 +11,30 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import model.Ball;
 import model.Game;
-import model.Score;
 import thread.ThreadBall;
 import thread.ThreadVisual;
 
 public class ControlGame implements Initializable{
-
+	
 	//Attributes
 	private Game game;
 	
 	//Nodes
+	private HBox scoreBox;
 	private Canvas canvas;
 	@FXML
 	private Menu file;
@@ -45,89 +44,38 @@ public class ControlGame implements Initializable{
 	private AnchorPane pane;
 	
 	//Methods
-	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		this.game=new Game();
 	}
 	
-	public void loadGame() {
-		//ChooseFile
-		Stage stage = (Stage) pane.getScene().getWindow();
-		FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Game Selector");
-		File file=fileChooser.showOpenDialog(stage);
-		game.loadGame(file.toString());
-		//...
-		
-		//Canvas
-		canvas = new Canvas(pane.getWidth(), pane.getHeight());
-		pane.getChildren().removeAll();
-		pane.getChildren().add(canvas);
-	    //...
-		
-		//StopMethod
-		pane.setOnMouseClicked(event->stopBall(event));
-		//...
-		
-		//ThreadBall
-		ArrayList<Ball> balls=game.getBalls();
-		for(Ball ball: balls){
-			ThreadBall vBall=new ThreadBall(this, ball);
-		    vBall.start();
-		}
-		//...
-		
-		//ThreadVisual
-		ThreadVisual visual=new ThreadVisual(this);
-		visual.start();
-		//...
+	public double[] screenDimnesions(){
+		double[] rectangle={pane.getWidth(), pane.getHeight()};
+		return rectangle;
 	}
 	
-	public void stopBall(MouseEvent e){
-		if(!getWin()){
-			double x = e.getX();
-			double y = e.getY();
-			ArrayList<Ball> balls=game.getBalls();
-			for(Ball ball: balls){
-				ball.stop(x,y);
-			}
-		}
+	public boolean getFinshed(){
+		return game.finshed();
 	}
 	
+	//Threads
 	public void win(){
 		System.out.println("YOU WIN! -Score:"+game.totalBounces());
-		if(game.record()){
-			game.addScore("Esarac");
-		}
-		else{
-			
-		}
-	}
-	
-	public void showRecords(){
-		Score[][] scores=game.getScores();
-		GridPane grid=new GridPane();
-		pane.getChildren().add(grid);
-		
-		for(int x=0; x<scores.length; x++){//Filas
-			RowConstraints row=new RowConstraints();
-			row.setVgrow(Priority.ALWAYS);
-			grid.getRowConstraints().add(row);
-		}
-		for(int y=0; y<scores[0].length; y++){//Columnas
-			ColumnConstraints column=new ColumnConstraints();
-			column.setHgrow(Priority.ALWAYS);
-			grid.getColumnConstraints().add(column);
-		}
-		
-		for(int x=0; x<scores.length; x++){
-			for(int y=0; y<scores[0].length; y++){
-				Label score=new Label();
-				if(scores[x][y]!=null) {score.setText(scores[x][y].toString());}
-				score.setMaxWidth(Double.MAX_VALUE);
-				score.setMaxHeight(Double.MAX_VALUE);
-				grid.add(score, y, x);
+		if(game.totalBounces()>=0){
+			if(game.record()){
+				game.addScore("Esarac");
+//		        TextInputDialog td = new TextInputDialog(); 
+//		        td.setHeaderText("New Record!"); 
+//		        td.showAndWait();
+//		        
+//				game.addScore(td.getEditor().getText());
 			}
+//			else{
+//				ButtonType ok=new ButtonType("Ok",ButtonBar.ButtonData.OK_DONE);
+//				Alert alert=new Alert(AlertType.ERROR, "Try again.", ok);
+//				alert.setHeaderText("Invalid file!");
+//				alert.show();
+//			}
+			game.saveScores();
 		}
 	}
 	
@@ -137,30 +85,119 @@ public class ControlGame implements Initializable{
 	    //...
 	    
 	    //Background
-		gc.setFill(Color.WHITE);
-		gc.fillRect(0, 0, pane.getWidth(), pane.getHeight());
+	    gc.clearRect(0, 0, pane.getWidth(), pane.getHeight());
 		//...
 		
 		//Balls
 		ArrayList<Ball> balls=game.getBalls();
-		for(Ball ball: balls){
-			double radius=ball.getRadius()*2;
-			double posX=ball.getPosX()-ball.getRadius();
-			double posY=ball.getPosY()-ball.getRadius();
+		for(int i=0; i<balls.size(); i++){
+			double radius=balls.get(i).getRadius()*2;
+			double posX=balls.get(i).getPosX()-balls.get(i).getRadius();
+			double posY=balls.get(i).getPosY()-balls.get(i).getRadius();
 			
-			gc.setFill(Color.PURPLE);
+			//Border
+			gc.setFill(Color.BLACK);
+			gc.fillOval(posX-2, posY-2, (radius)+5, (radius)+5);
+			//...
+			
+			//Ball
+			gc.setFill(Color.rgb(255/((i+1)*2), 255/((i+1)*3), 255/(i+1)));
 			gc.fillOval(posX, posY, radius, radius);
+			//...
 		}
 		//...
 	}
 	
-	public double[] screenDimnesions(){
-		double[] rectangle={pane.getWidth(), pane.getHeight()};
-		return rectangle;
+	//OnAction
+	public void loadGame() {
+		game.resetGame();
+		try{
+			//ChooseFile
+			Stage stage = (Stage) pane.getScene().getWindow();
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.setTitle("Game Selector");
+			fileChooser.getExtensionFilters().add(new ExtensionFilter("SAV", Game.FILE_TYPE));
+			fileChooser.getExtensionFilters().add(new ExtensionFilter("TXT", "*.txt"));
+			File dir = new File("dat/games");
+			fileChooser.setInitialDirectory(dir);
+			File file=fileChooser.showOpenDialog(stage);
+			//...
+			if(game.loadGame(file.toString())){
+				//Canvas
+				pane.getChildren().remove(canvas);pane.getChildren().remove(scoreBox);//Remove
+				canvas = new Canvas(pane.getWidth(), pane.getHeight());
+				pane.getChildren().add(canvas);
+			    //...
+				
+				//StopMethod
+				pane.setOnMouseClicked(event->stopBall(event));
+				//...
+				
+				//ThreadBall
+				ArrayList<Ball> balls=game.getBalls();
+				for(Ball ball: balls){
+					ThreadBall vBall=new ThreadBall(this, ball);
+				    vBall.start();
+				}
+				//...
+				
+				//ThreadVisual
+				ThreadVisual visual=new ThreadVisual(this);
+				visual.start();
+				//...
+			}
+			else{
+				ButtonType ok=new ButtonType("Ok",ButtonBar.ButtonData.OK_DONE);
+				Alert alert=new Alert(AlertType.ERROR, "Try again.", ok);
+				alert.setHeaderText("Invalid file!");
+				alert.show();
+			}
+		}
+		catch(NullPointerException e){}
+		
 	}
 	
-	public boolean getWin(){
-		return game.win();
+	public void saveGame(){
+		try{
+			//ChooseFile
+			Stage stage = (Stage) pane.getScene().getWindow();
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.setTitle("Game Saver");
+			fileChooser.getExtensionFilters().add(new ExtensionFilter("SAV", Game.FILE_TYPE));
+			fileChooser.getExtensionFilters().add(new ExtensionFilter("TXT", "*.txt"));
+			File dir = new File("dat/games");
+			fileChooser.setInitialDirectory(dir);
+			File file=fileChooser.showSaveDialog(stage);;
+			//...
+			
+			game.saveGame(file.getPath());
+		}
+		catch(NullPointerException e){
+			
+		}
+		
+	}
+	
+	public void stopBall(MouseEvent e){
+		if(!getFinshed()){
+			double x = e.getX();
+			double y = e.getY();
+			ArrayList<Ball> balls=game.getBalls();
+			for(Ball ball: balls){
+				ball.stop(x,y);
+			}
+		}
+	}
+	
+	public void showRecords(){
+		pane.getChildren().remove(canvas);pane.getChildren().remove(scoreBox);//Remove
+		scoreBox=new HBox();
+		scoreBox.setSpacing(25);
+		for(int level:Game.LEVELS){
+			Label levelRecords=new Label(game.showRecords(level));
+			scoreBox.getChildren().add(levelRecords);
+		}
+		pane.getChildren().add(scoreBox);
 	}
 	
 }
