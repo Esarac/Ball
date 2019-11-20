@@ -17,7 +17,6 @@ public class ThreadBall extends Thread{
 	
 	public void run(){
 		while(ball.isMoving()){
-			//System.out.println("ThreadBall "+ball);
 			double[] stage=game.screenDimnesions();
 			
 			ball.move();

@@ -24,6 +24,7 @@
             <Menu mnemonicParsing="false" text="View" fx:id="view">
               <items>
                 <MenuItem mnemonicParsing="false" onAction="#showRecords" text="Show Records" />
+                <MenuItem mnemonicParsing="false" onAction="#win" text="Add Record" />
               </items>
             </Menu>
           </menus>

@@ -128,7 +128,6 @@ public class Ball {
 		else{//(min<=length<=max)
 			newVector=vector;
 		}
-		
 		return newVector;
 		
 	}

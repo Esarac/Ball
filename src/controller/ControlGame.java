@@ -5,20 +5,24 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -62,19 +66,18 @@ public class ControlGame implements Initializable{
 		System.out.println("YOU WIN! -Score:"+game.totalBounces());
 		if(game.totalBounces()>=0){
 			if(game.record()){
-				game.addScore("Esarac");
-//		        TextInputDialog td = new TextInputDialog(); 
-//		        td.setHeaderText("New Record!"); 
-//		        td.showAndWait();
-//		        
-//				game.addScore(td.getEditor().getText());
+		        TextInputDialog td = new TextInputDialog(); 
+		        td.setHeaderText("New Record!"); 
+		        td.showAndWait();
+		        
+				game.addScore(td.getEditor().getText());
 			}
-//			else{
-//				ButtonType ok=new ButtonType("Ok",ButtonBar.ButtonData.OK_DONE);
-//				Alert alert=new Alert(AlertType.ERROR, "Try again.", ok);
-//				alert.setHeaderText("Invalid file!");
-//				alert.show();
-//			}
+			else{
+				ButtonType ok=new ButtonType("Ok",ButtonBar.ButtonData.OK_DONE);
+				Alert alert=new Alert(AlertType.ERROR, "Try again.", ok);
+				alert.setHeaderText("Invalid file!");
+				alert.show();
+			}
 			game.saveScores();
 		}
 	}

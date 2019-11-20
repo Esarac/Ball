@@ -14,7 +14,7 @@ class testBall {
 	//Scenes
 	private void setUpSceneBall1(){
 		double[] vector= {1,0};
-		ball=new Ball(50, 70, 90, vector, 0, 10, true);
+		ball=new Ball(50, 100, 100, vector, 0, 10, true);
 	}
 	
 	//Tests
@@ -33,4 +33,33 @@ class testBall {
 		assertTrue((distanceMin>=9.9)&&(distanceMin<=10));
 	}
 
+	@Test
+	void testStop(){
+		setUpSceneBall1();
+		ball.stop(100, 100);
+		assertFalse(ball.isMoving());
+		
+		setUpSceneBall1();
+		ball.stop(50, 100);
+		assertFalse(ball.isMoving());
+		
+		setUpSceneBall1();
+		ball.stop(100, 50);
+		assertFalse(ball.isMoving());
+		
+		setUpSceneBall1();
+		ball.stop(150, 100);
+		assertFalse(ball.isMoving());
+		
+		setUpSceneBall1();
+		ball.stop(100, 150);
+		assertFalse(ball.isMoving());
+	}
+	
+	@Test
+	void testBounce(){
+		setUpSceneBall1();
+		ball.bounce(150, 1000);
+	}
+	
 }
