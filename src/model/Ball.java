@@ -1,19 +1,21 @@
 package model;
 
+import exception.InvalidVectorException;
+
 public class Ball {
 
 	//Constants
 	public final static int DIMENSIONS=2;
 	public enum Direction{
 		
-		UP(0,-1),
-		DOWN(0,1),
-		LEFT(-1,0),
-		RIGHT(1,0),
-		UP_LEFT(-1,-1),
-		UP_RIGHT(1,-1),
-		DOWN_LEFT(-1,1),
-		DOWN_RIGHT(1,1),
+		UP(0,-10),
+		DOWN(0,10),
+		LEFT(-10,0),
+		RIGHT(10,0),
+		UP_LEFT(-10,-10),
+		UP_RIGHT(10,-10),
+		DOWN_LEFT(-10,10),
+		DOWN_RIGHT(10,10),
 		;
 		
 		private double[] direction;
@@ -56,7 +58,7 @@ public class Ball {
 		}
 	}
 	
-	//Methods
+	//Moving
 	public void move(){
 		if(moving){
 			this.posX+=direction[0];
@@ -104,6 +106,7 @@ public class Ball {
 		
 	}
 	
+	//Calculate
 	public double[] unitVector(double[] vector){
 		
 		//Constant
@@ -114,7 +117,6 @@ public class Ball {
 		
 		double[] newVector=null;
 		double length=Math.sqrt( (Math.pow(vector[0], 2)) + (Math.pow(vector[1], 2)) );
-		
 		if(length>max){
 			vector[0]/=changer;
 			vector[1]/=changer;
@@ -132,6 +134,11 @@ public class Ball {
 		
 	}
 
+	//Set
+	public void setMoving(boolean moving) {
+		this.moving=moving;
+	}
+	
 	//Get
 	public double getRadius() {
 		return radius;
@@ -159,10 +166,6 @@ public class Ball {
 
 	public boolean isMoving() {
 		return moving;
-	}
-	
-	public void setMoving(boolean moving) {
-		this.moving=moving;
 	}
 	
 	public String toString(){

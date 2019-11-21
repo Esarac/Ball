@@ -6,9 +6,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
 
-<BorderPane id="BorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="controller.ControlGame">
+<BorderPane id="BorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="controller.ControlGame">
   <center>
-    <AnchorPane fx:id="pane" prefHeight="-1.0" prefWidth="-1.0" BorderPane.alignment="CENTER" />
+    <AnchorPane fx:id="pane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" BorderPane.alignment="CENTER" />
   </center>
   <top>
     <HBox prefHeight="27.0" prefWidth="600.0">
@@ -24,7 +24,7 @@
             <Menu mnemonicParsing="false" text="View" fx:id="view">
               <items>
                 <MenuItem mnemonicParsing="false" onAction="#showRecords" text="Show Records" />
-                <MenuItem mnemonicParsing="false" onAction="#win" text="Add Record" />
+                <MenuItem mnemonicParsing="false" onAction="#showInformation" text="About the game" />
               </items>
             </Menu>
           </menus>

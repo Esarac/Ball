@@ -12,6 +12,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import exception.FileDoesNotExistException;
 import model.Ball.Direction;
 
 public class Game {
@@ -37,15 +38,18 @@ public class Game {
 	
 	//Add
 	public void addScore(String nickname){
-		scores[level][TOP-1]=new Score(nickname, totalBounces());
-		for(int i=0; i<scores[level].length; i++){
-			for(int j=0; j<(scores[level].length-(i+1)); j++){
-				if(scores[level][j+1]!=null){
-					if( (scores[level][j+1].compareTo(scores[level][j]))<0 ){
-						Score actualScore=scores[level][j];
-						
-						scores[level][j]=scores[level][j+1];
-						scores[level][j+1]=actualScore;
+		if(record()){
+			if(nickname.isEmpty()){nickname="Spyro";}
+			scores[level][TOP-1]=new Score(nickname, totalBounces());
+			for(int i=0; i<scores[level].length; i++){
+				for(int j=0; j<(scores[level].length-(i+1)); j++){
+					if(scores[level][j+1]!=null){
+						if( (scores[level][j+1].compareTo(scores[level][j]))<0 ){
+							Score actualScore=scores[level][j];
+							
+							scores[level][j]=scores[level][j+1];
+							scores[level][j+1]=actualScore;
+						}
 					}
 				}
 			}
@@ -53,7 +57,7 @@ public class Game {
 	}
 	
 	//Calculate
-	public boolean finshed(){
+	public boolean finished(){
 		boolean win=true;
 		for(int i=0; (i<balls.size()) && win; i++){
 			if(balls.get(i).isMoving()){
@@ -94,15 +98,22 @@ public class Game {
 	//Show
 	public String showRecords(int level){
 		String levelRecords="Level "+level+":";
-		for(int i=0; i<scores[level].length; i++){
-			if(scores[level][i]!=null){
-				levelRecords+="\n"+scores[level][i];
+		
+		try{
+			for(int i=0; i<scores[level].length; i++){
+				if(scores[level][i]!=null){
+					levelRecords+="\n"+scores[level][i];
+				}
+				else{
+					levelRecords+="\n"+"------";
+				}
+				
 			}
-			else{
-				levelRecords+="\n"+"------";
-			}
-			
 		}
+		catch(IndexOutOfBoundsException e){
+			levelRecords+="Invalid level!";
+		}
+		
 		return levelRecords;
 	}
 	
@@ -125,7 +136,7 @@ public class Game {
 				String[] globalData=data.split("\n");
 				int index=0;
 				for(String individualData: globalData){
-					if(individualData.charAt(0)!='#'){//Ignore->#
+					if((!individualData.isEmpty()) && (individualData.charAt(0)!='#')){//Ignore->#
 						if(index==0){//Level
 							for(int level: LEVELS){
 								if(Integer.parseInt(individualData)==level){
@@ -249,6 +260,20 @@ public class Game {
 		return text;
 	}
 	
+	//Set
+	public void setLevel(int level){
+		this.level=level;
+	}
+	
+	public void setScores(Score[][] scores){
+		this.scores=scores;
+	}
+	
+	public void setBalls(ArrayList<Ball> balls){
+		this.balls=balls;
+	}
+	
+	//Get
 	public int getLevel(){
 		return level;
 	}

@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -13,9 +14,9 @@ public class Main extends Application {
 		try {
 			Parent root=FXMLLoader.load(getClass().getResource("/view/Game.fxml"));//FXML
 			root.getStylesheets().add(getClass().getResource("Style.css").toExternalForm());//CSS
-//			primaryStage.getIcons().add(new Image("file:../../mda/images/icon.png"));
+			primaryStage.getIcons().add(new Image("file:../../med/Icon.png"));
 			primaryStage.setTitle("Ball Game");
-			primaryStage.setScene(new Scene(root));
+			primaryStage.setScene(new Scene(root, 800, 600));
 			primaryStage.show();
 		} catch(Exception e) {
 			e.printStackTrace();

@@ -1,5 +1,5 @@
 #Level
 0
 #radius	posX	posY	wait	dir	bounces	moving
-50.0	100	100	20	1,1	0	true
-50.0	100	400	20	1,-1	0	true
+50.0	100	100	20	UP	0	true
+50.0	100	400	20	LEFT	0	true

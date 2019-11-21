@@ -17,17 +17,18 @@ public class Score implements Comparable<Score>, Serializable{
 		this.score=score;
 	}
 	
-	//Methods
-	public int getScore(){
-		return score;
-	}
-
+	//Compare
 	@Override
 	public int compareTo(Score score){
 		int delta;
 		if(score!=null){delta=this.score-score.score;}
 		else{delta=-1;}
 		return delta;
+	}
+
+	//Get
+	public int getScore(){
+		return score;
 	}
 	
 	public String toString(){
